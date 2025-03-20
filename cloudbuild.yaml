@@ -23,7 +23,7 @@ steps:
   args:
   - 'set'
   - 'image'
-  - 'deployment/container1'
+  - 'deployment/k8-container1-deployment'
   - 'container1=us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
