@@ -1,3 +1,6 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
@@ -7,6 +10,14 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA']
 
+# Tag as latest
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:latest']
+
+# Push latest tag
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:latest']
+  
 # Deploy to GKE
 - name: 'gcr.io/cloud-builders/kubectl'
   args:
@@ -18,17 +29,8 @@ steps:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
 
-# Tag as latest
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:latest']
-
-# Push latest tag
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:latest']
-
 images:
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA'
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:latest'
 
-options:
-  logging: CLOUD_LOGGING_ONLY
+
