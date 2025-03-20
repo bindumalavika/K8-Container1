@@ -6,10 +6,10 @@ from io import StringIO
 
 app = Flask(__name__)
 
-# replace 'yourname' with first name
-PV_DIR = "/yourname_PV_dir"
-# This should be the Kubernetes service name for container 2
-CONTAINER2_SERVICE = "http://container2-service:5000/calculate"
+
+PV_DIR = "/Bindu_PV_dir "
+
+os.makedirs(PERSISTENT_STORAGE, exist_ok=True)
 
 @app.route('/store-file', methods=['POST'])
 def store_file():
