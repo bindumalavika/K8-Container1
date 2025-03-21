@@ -14,12 +14,13 @@ resource "google_container_cluster" "initial_terraform_cluster" {
 resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "my-node-pool"
   cluster    = google_container_cluster.initial_terraform_cluster.id
-  location   = google_container_cluster.gke_cluster.location
+  location   = google_container_cluster.initial_terraform_cluster.location
   node_count = 1
 
   node_config {
     machine_type = "e2-micro"
     disk_size_gb = 10
+    disk_type    = "pd-standard"  # Set the disk type to pd-standard
     image_type   = "COS_CONTAINERD"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -27,42 +28,13 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   }
 }
 
-# Fetch the GKE cluster credentials
-data "google_client_config" "default" {}
+//Removed prev code beacause i don't need GKE storage ssd and PVC, instead i have a disk of type pd-standard 
+which will be attached with node and can be used by containers in the same pod
 
-# Configure the Kubernetes provider
-provider "kubernetes" {
-  host = "https://${google_container_cluster.initial_terraform_cluster.endpoint}"
-  token = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.initial_terraform_cluster.master_auth[0].cluster_ca_certificate)
-}
-
-# Create a Storage Class for SSDs
-resource "kubernetes_storage_class" "ssd" {
-  metadata {
-    name = "ssd"
-  }
-  storage_provisioner = "kubernetes.io/gce-pd"
-  parameters = {
-    type = "pd-ssd"
-  }
-}
-
-# Create a Persistent Volume Claim (PVC)
-resource "kubernetes_persistent_volume_claim" "container1-pvc" {
-  metadata {
-    name = "container1-pvc"
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]  # GCE Persistent Disks only support ReadWriteOnce
-    resources {
-      requests = {
-        storage = "1Gi"
-      }
-    }
-    storage_class_name = kubernetes_storage_class.ssd.metadata[0].name  # Use the SSD Storage Class
-  }
-
-  # Ensure the PVC is created only after the GKE cluster is ready
-  depends_on = [google_container_cluster.initial_terraform_cluster]
+# Create a Google Cloud Disk
+resource "google_compute_disk" "default" {
+  name  = "bindu-disk"
+  type  = "pd-standard"
+  zone  = "us-central1-a"
+  size  = 10
 }

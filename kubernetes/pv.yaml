@@ -8,10 +8,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
-  claimRef:
-    namespace: default
-    name: bindu-pvc
   gcePersistentDisk:
     pdName: bindu-disk
     fsType: ext4
