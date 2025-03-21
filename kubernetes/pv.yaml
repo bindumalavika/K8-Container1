@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bindu-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  claimRef:
+    namespace: default
+    name: bindu-pvc
+  gcePersistentDisk:
+    pdName: bindu-disk
+    fsType: ext4
