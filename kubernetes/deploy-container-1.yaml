@@ -13,7 +13,7 @@ spec:
         app: k8-Container1
     spec:
       nodeSelector:
-        kubernetes.io/hostname: gke-my-gke-cluster-my-node-pool-4a9afc28-nt71  # Ensure pod runs on the correct node
+        kubernetes.io/hostname: gke-my-gke-cluster-my-node-pool-668dd6af-w44l  # Ensure pod runs on the correct node
       imagePullSecrets:
       - name: gcr-json-key
       containers:
