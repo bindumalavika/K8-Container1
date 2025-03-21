@@ -6,9 +6,9 @@ from io import StringIO
 
 app = Flask(__name__)
 
-PV_DIR = "/Bindu_PV_dir "
+PV_DIR = "/Bindu_PV_dir"
 
-os.makedirs(PERSISTENT_STORAGE, exist_ok=True)
+os.makedirs(PV_DIR, exist_ok=True)
 
 @app.route('/store-file', methods=['POST'])
 def store_file():
