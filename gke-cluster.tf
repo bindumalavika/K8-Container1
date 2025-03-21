@@ -6,8 +6,7 @@ provider "google" {
 
 resource "google_container_cluster" "initial_terraform_cluster" {
   name     = "my-gke-cluster"
-  location = "us-central1"
-  zone  = "us-central1-a"
+  location = "us-central1-a"
 
   remove_default_node_pool = true
   initial_node_count       = 1
