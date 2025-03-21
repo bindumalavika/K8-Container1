@@ -16,7 +16,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "my-node-pool"
   cluster    = google_container_cluster.initial_terraform_cluster.id
   location   = google_container_cluster.initial_terraform_cluster.location
-  zone = google_container_cluster.initial_terraform_cluster.zone
   node_count = 1
 
   node_config {
