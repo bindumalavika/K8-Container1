@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 import os
 import requests
-import csv
-from io import StringIO
 
 app = Flask(__name__)
 
@@ -10,7 +8,7 @@ PV_DIR = "/Bindu_PV_dir"
 
 os.makedirs(PV_DIR, exist_ok=True)
 
-CONTAINER2_SERVICE = "http://container2-service:5001/calculate"
+CONTAINER2_SERVICE = "http://container2-service:5001/process"
 
 @app.route('/store-file', methods=['POST'])
 def store_file():
@@ -24,10 +22,6 @@ def store_file():
         return jsonify({"file": data['file'], "error": "Invalid JSON input."}), 400
     
     try:
-        # Ensure directory exists
-        os.makedirs(PV_DIR, exist_ok=True)
-        
-        # Write data to file
         file_path = os.path.join(PV_DIR, data['file'])
         with open(file_path, 'w') as f:
             f.write(data['data'])
