@@ -61,6 +61,8 @@ def calculate():
     if 'product' not in data or not data['product']:
         return jsonify({"file": data['file'], "error": "Invalid JSON input."}), 400
     
+    original_filename = data['file']
+
     # Rename file to CSV if needed
     filename, file_path = rename_to_csv_if_needed(data['file'])
     
@@ -75,10 +77,7 @@ def calculate():
         
         # Ensure response is valid JSON
         response_data = response.json()
-        response_data["file"] = data['file']  # Use original filename in response
-        
-        # Replace the filename in the response with the original filename
-        response_data["file"] = data['file']
+        response_data["file"] =  original_filename  # Use original filename in response
         
         return jsonify(response_data), response.status_code
     except Exception as e:
