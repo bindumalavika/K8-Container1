@@ -9,6 +9,11 @@ os.makedirs(PV_DIR, exist_ok=True)
 
 CONTAINER2_SERVICE = os.getenv('PROCESSOR_SERVICE_URL')
 
+def file_exists(filename):
+    """Check if the given file exists in the mounted volume."""
+    file_path = os.path.join(PV_DIR, filename)
+    return os.path.exists(file_path)
+
 def rename_to_csv_if_needed(filename):
     """If file is not a .csv, rename it to .csv"""
     file_path = os.path.join(PV_DIR, filename)
@@ -53,24 +58,26 @@ def calculate():
     if not data or 'file' not in data or not data['file']:
         return jsonify({"file": None, "error": "Invalid JSON input."}), 400
     
-    if 'product' not in data:
+    if 'product' not in data or not data['product']:
         return jsonify({"file": data['file'], "error": "Invalid JSON input."}), 400
     
     # Rename file to CSV if needed
     filename, file_path = rename_to_csv_if_needed(data['file'])
     
     # Check if file exists
-    if not os.path.exists(file_path):
+    if not file_exists(filename):
         return jsonify({"file": filename, "error": "File not found."}), 404
     
     try:
-        # Forward request to Container 2 with the updated filename
-        data['file'] = filename  # Update JSON payload with the actual .csv filename
+        # Forward request to Container 2 with updated filename
+        data['file'] = filename
         response = requests.post(CONTAINER2_SERVICE, json=data)
         
-        # Ensure the response is valid JSON
-        response_json = response.json()
-        return jsonify(response_json), response.status_code
+        # Ensure response is valid JSON
+        response_data = response.json()
+        response_data["file"] = data['file']  # Use original filename in response
+        
+        return jsonify(response_data), response.status_code
     except Exception as e:
         print(f"Error calling container 2: {str(e)}")
         return jsonify({"file": filename, "error": "Error processing the request."}), 500
