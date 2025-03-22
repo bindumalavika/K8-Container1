@@ -7,7 +7,7 @@ app = Flask(__name__)
 PV_DIR = "/Bindu_PV_dir"
 os.makedirs(PV_DIR, exist_ok=True)
 
-CONTAINER2_SERVICE = os.getenv('PROCESSOR_SERVICE_URL')
+CONTAINER2_SERVICE = os.getenv('PROCESSOR_SERVICE_URL'+"/process")
 
 def file_exists(filename):
     """Check if the given file exists in the mounted volume."""
