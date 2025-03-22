@@ -8,7 +8,7 @@ PV_DIR = "/Bindu_PV_dir"
 
 os.makedirs(PV_DIR, exist_ok=True)
 
-CONTAINER2_SERVICE = "http://container2-service.default.svc.cluster.local:5001/process"
+CONTAINER2_SERVICE = "http://container2-service:5001/process"
 
 @app.route('/store-file', methods=['POST'])
 def store_file():
