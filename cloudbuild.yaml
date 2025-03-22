@@ -24,7 +24,7 @@ steps:
   - 'set'
   - 'image'
   - 'deployment/k8-containers-deployment'
-  - 'container1=us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA'
+  - 'k8-container1=us-central1-docker.pkg.dev/$PROJECT_ID/kubernetes-containers/container1:$COMMIT_SHA'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=my-gke-cluster'
