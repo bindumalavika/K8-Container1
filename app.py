@@ -66,7 +66,7 @@ def calculate():
     
     # Check if file exists
     if not file_exists(filename):
-        return jsonify({"file": filename, "error": "File not found."}), 404
+        return jsonify({"file": data['file'], "error": "File not found."}), 404
     
     try:
         # Forward request to Container 2 with updated filename
@@ -77,10 +77,13 @@ def calculate():
         response_data = response.json()
         response_data["file"] = data['file']  # Use original filename in response
         
+        # Replace the filename in the response with the original filename
+        response_data["file"] = data['file']
+        
         return jsonify(response_data), response.status_code
     except Exception as e:
         print(f"Error calling container 2: {str(e)}")
-        return jsonify({"file": filename, "error": "Error processing the request."}), 500
+        return jsonify({"file": data['file'], "error": "Error processing the request."}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
