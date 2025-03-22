@@ -5,7 +5,6 @@ import requests
 app = Flask(__name__)
 
 PV_DIR = "/Bindu_PV_dir"
-
 os.makedirs(PV_DIR, exist_ok=True)
 
 CONTAINER2_SERVICE = os.getenv('PROCESSOR_SERVICE_URL')
