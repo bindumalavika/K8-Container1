@@ -14,13 +14,13 @@ resource "google_container_cluster" "initial_terraform_cluster" {
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "my-node-pool"
-  cluster    = google_container_cluster.initial_terraform_cluster.id
+  cluster    = google_container_cluster.initial_terraform_cluster.name
   location   = google_container_cluster.initial_terraform_cluster.location
   node_count = 1
 
   node_config {
-    machine_type = "e2-micro"
-    disk_size_gb = 10
+    machine_type = "e2-medium" #updated from e2-micro for smooth running of nodes
+    disk_size_gb = 20 #updated due disk pressure when size was 10
     disk_type    = "pd-standard"  # Set the disk type to pd-standard
     image_type   = "COS_CONTAINERD"
     oauth_scopes = [

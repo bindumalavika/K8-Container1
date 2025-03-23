@@ -1,0 +1,87 @@
+#persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bindu-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard-rwo
+  gcePersistentDisk:
+    pdName: bindu-disk
+    fsType: ext4
+
+---
+#persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bindu-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: bindu-pv
+
+---
+#deployment of containers
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8-containers-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8-containers-deployment
+  template:
+    metadata:
+      labels:
+        app: k8-containers-deployment
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: gke-my-gke-cluster-my-node-pool-b37ea055-ovlb
+      containers:
+        - name: k8-container1
+          image: us-central1-docker.pkg.dev/k8-assignment-453622/kubernetes-containers/container1:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PROCESSOR_SERVICE_URL
+              value: "http://localhost:5001"
+          volumeMounts:
+            - name: standard-volume
+              mountPath: /Bindu_PV_dir
+
+        - name: k8-container2
+          image: us-central1-docker.pkg.dev/k8-assignment-453622/kubernetes-containers/container2:latest
+          ports:
+            - containerPort: 5001
+          volumeMounts:
+            - name: standard-volume
+              mountPath: /Bindu_PV_dir
+
+      volumes:
+        - name: standard-volume
+          persistentVolumeClaim:
+            claimName: bindu-pvc
+
+---
+#service
+apiVersion: v1
+kind: Service
+metadata:
+  name: container1-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: k8-containers-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
