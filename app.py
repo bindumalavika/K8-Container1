@@ -46,8 +46,12 @@ def store_file():
     
     try:
         filename, file_path = rename_to_csv_if_needed(data['file'])
+        
+        lines = data["data"].split("\n")
+        formatted_lines = [",".join([col.strip() for col in line.split(",")]) for line in lines]
+
         with open(file_path, 'w') as f:
-            f.write(data['data'])
+            f.write("\n".join(formatted_lines))
         
         return jsonify({"file": data['file'], "message": "Success."}), 200
     except Exception as e:
