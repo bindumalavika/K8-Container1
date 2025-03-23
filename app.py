@@ -45,7 +45,7 @@ def store_file():
         return jsonify({"file": data['file'], "error": "Invalid JSON input."}), 400
     
     try:
-        file_path = os.path.join(PV_DIR, data['file'])
+        filename, file_path = rename_to_csv_if_needed(data['file'])
         with open(file_path, 'w') as f:
             f.write(data['data'])
         
